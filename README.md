@@ -31,7 +31,7 @@ e.g. change "XXXXXXX" in MapServiceToken:
         </maps:MapControl>
 ```
 
-Once this has been setup it should build and run. However, for completing a ride (as in the video below), you'll need to change state of the simulated ride, since we're not actually requesting a real Lyft ride. I've made a small WPF tool to change the state of the simulated ride, which can be found HERE. Once you press "Request lyft" while debugging in VS studio, the app will log the current ride id as well as token to the console. Copy/paste these to HERE and change the state (to simulate a real ride). Note: changing state is merely an api call to Lyft, so you could also use curl etc.
+Once this has been setup it should build and run. However, for completing a ride (as in the video below), you'll need to change state of the simulated ride, since we're not actually requesting a real Lyft ride. I've made a small WPF tool to change the state of the simulated ride, which can be found [here](https://github.com/cjesp/29LiftsSupportApp). Once you press "Request lyft" while debugging in VS studio, the app will log the current ride id as well as token to the console. Copy/paste these to the tool app and change the state (to simulate a real ride). Note: changing state is merely an api call to Lyft, so you could also use curl etc.
 
 
 Check out this 2 min video showing a basic Lyft ride:
