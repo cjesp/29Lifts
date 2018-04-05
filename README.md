@@ -1,5 +1,5 @@
 # 29Lifts
-A Lyft clone for Windows Phone (UWP). This was a project for investigating the UWP platform but was never released to the store. It uses the [Template10](https://github.com/Windows-XAML/Template10) library.
+A Lyft clone for Windows Phone (UWP). This was a project for investigating the UWP platform but was never released to the store. It uses the [Template10](https://github.com/Windows-XAML/Template10) library. Tested with the Win 10 15063 SDK.
 
 
 # How to compile and run this project
