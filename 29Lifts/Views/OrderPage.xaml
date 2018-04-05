@@ -1,0 +1,325 @@
+﻿<Page
+    x:Class="_29Lifts.Views.OrderPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:_29Lifts.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:interactions="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:behaviors="using:_29Lifts.Behaviors"
+    xmlns:mycontrols="using:_29Lifts.Controls"
+    xmlns:controls="using:Template10.Controls"
+    xmlns:resultvm="using:_29Lifts.ViewModels.OrderPage"
+    xmlns:vm="using:_29Lifts.ViewModels"
+    xmlns:converter="using:_29Lifts.Converter"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <vm:OrderPageViewModel x:Name="ViewModel"/>
+    </Page.DataContext>
+    <Page.Resources>
+        <converter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <Style x:Key="SearchBoxStyle" TargetType="AutoSuggestBox">
+            <Setter Property="TextBoxStyle">
+                <Setter.Value>
+                    <Style TargetType="TextBox">
+                        <Setter Property="FontSize" Value="22"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <DataTemplate x:Key="SearchResult" x:DataType="resultvm:AddressSearchResultViewModel">
+            <StackPanel Orientation="Vertical">
+                <TextBlock FontSize="20" Text="{x:Bind Title}"/>
+                <TextBlock FontSize="12" Text="{x:Bind SubTitle}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <maps:MapControl x:Name="TheMap" Center="{x:Bind ViewModel.CenterPoint, Mode=TwoWay}" ZoomLevel="{x:Bind ViewModel.ZoomLevel, Mode=OneWay}" 
+                            MapServiceToken="XXXXXXXX">
+            <TextBlock FontSize="14" HorizontalAlignment="Left" Foreground="Black" VerticalAlignment="Center" 
+                        FontFamily="Segoe MDL2 Assets" Text="&#xE81D;" maps:MapControl.NormalizedAnchorPoint="0.5,0.5" maps:MapControl.Location="{x:Bind ViewModel.LocationPoint, Mode=OneWay}"/>
+            <mycontrols:TimeNeedle VerticalAlignment="Center" CountAvailable="{x:Bind ViewModel.CountAvailable, Mode=TwoWay}" 
+                                   MinuteCounter="{x:Bind ViewModel.MinuteCounter, Mode=TwoWay}" maps:MapControl.Location="{x:Bind ViewModel.PickupPoint, Mode=OneWay}" 
+                                   HorizontalAlignment="Center" Margin="0,0,0,7"
+                                   maps:MapControl.NormalizedAnchorPoint="0.5 1.1"/>
+
+            <Image Source="ms-appx://29Lifts/Assets/pin.png" maps:MapControl.Location="{x:Bind ViewModel.Destination.DestinationPoint, Mode=OneWay}"
+                   Visibility="{x:Bind ViewModel.ShowDestination, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                   maps:MapControl.NormalizedAnchorPoint="0.5 1.0"/>
+        </maps:MapControl>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- The user profile picture -->
+            <Ellipse Grid.Row="0" Grid.Column="0" Tapped="{x:Bind ViewModel.UserTapped}" Stroke="LightGray" StrokeThickness="1" 
+                     HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Width="40" Height="40" >
+                <Ellipse.Fill>
+                    <ImageBrush>
+                        <ImageBrush.ImageSource>
+                            <BitmapImage DecodePixelHeight="40" DecodePixelWidth="40" UriSource="{x:Bind ViewModel.ProfilePictureSrc, Mode=OneWay}" />
+                        </ImageBrush.ImageSource>
+                    </ImageBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+            
+
+            <Grid Grid.Row="4" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center"
+                       Margin="0,0,10,0" Width="40" Height="40" Tapped="{x:Bind ViewModel.GpsTapped}">
+                <Ellipse Fill="White" Stroke="LightGray" StrokeThickness="1"/>
+                <TextBlock FontSize="20" HorizontalAlignment="Center" Foreground="Black" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" Text="&#xE81D;"/>
+            </Grid>
+
+            <Grid Grid.Row="5" Grid.RowSpan="4" Grid.ColumnSpan="3" Margin="5,0,5,5">
+                
+
+
+                <Grid Grid.Row="0" Margin="0,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.34*"/>
+                        <RowDefinition Height="0.22*"/>
+                        <RowDefinition Height="0.44*"/>
+                        <!--<RowDefinition Height="0.22*"/>-->
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Background="WhiteSmoke" BorderBrush="LightGray" BorderThickness="1" CornerRadius="5 5 0 0">
+                        <Grid Background="Transparent" Tapped="{x:Bind ViewModel.ShowDetailsTapped}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image VerticalAlignment="Center" HorizontalAlignment="Right" Width="75" Margin="0,0,3,0" Source="{x:Bind ViewModel.ModalViewModel.Image, Mode=OneWay}"/>
+                            <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="3,0,0,0">
+                                <TextBlock FontSize="18" Text="{x:Bind ViewModel.ModalViewModel.Title, Mode=OneWay}"/>
+                                <TextBlock FontSize="12" Foreground="Gray" Text="{x:Bind ViewModel.ModalViewModel.ShortTitle, Mode=OneWay}"/>
+                            </StackPanel>
+                        </Grid>
+
+                    </Border>
+                    <Border Grid.Row="1" Background="WhiteSmoke" BorderBrush="LightGray" BorderThickness="1 0 1 1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <!--<ColumnDefinition Width="auto"/>-->
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border BorderBrush="LightGray" BorderThickness="0 0 1 0" Grid.Column="0" Margin="0,5,0,5">
+                                <TextBlock FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                                           Text="{x:Bind ViewModel.PrimeTime, Mode=OneWay}"/>
+                                
+                            </Border>
+                            <!--<Line StrokeThickness="1" Stroke="Black" Margin="0,10,0,0"  X1="0" X2="0" Y1="0" Y2="30" Grid.Column="1"/>-->
+                            <Border Background="Transparent" Grid.Column="2" Tapped="{x:Bind ViewModel.DestinationTapped}">
+                                <TextBlock FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                                            Text="{x:Bind ViewModel.EstimatedPrice, Mode=OneWay}"/>
+                            </Border>
+                        </Grid>
+
+                    </Border>
+                    <!--<Border Grid.Row="2" Background="White" BorderBrush="LightGray" BorderThickness="1 0 1 1" Tapped="{x:Bind ViewModel.RequestLyftTapped}">
+
+
+                    </Border>-->
+                    <Border Grid.Row="2" Background="White" BorderBrush="LightGray" CornerRadius="0 0 5 5" BorderThickness="1 0 1 1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width=".1*"/>
+                                <ColumnDefinition Width=".9*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Row="0" Grid.Column="1" BorderBrush="LightGray" BorderThickness="0 0 0 1">
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{x:Bind ViewModel.LocationText, Mode=OneWay}"/>
+                            </Border>
+
+                            <Border Grid.Row="1" Grid.Column="1" Background="Transparent" Tapped="{x:Bind ViewModel.DestinationTapped}">
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{x:Bind ViewModel.DestinationText, Mode=OneWay}"/>
+                                <!--<Grid >
+                                </Grid>-->
+                            </Border>
+
+                            <Grid Grid.RowSpan="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height=".25*"/>
+                                    <RowDefinition Height=".25*"/>
+                                    <RowDefinition Height=".25*"/>
+                                    <RowDefinition Height=".25*"/>
+                                </Grid.RowDefinitions>
+                                <Ellipse VerticalAlignment="Center" Grid.ColumnSpan="2" Grid.RowSpan="2" Fill="#352384" Width="10" Height="10"/>
+
+                                <Border BorderThickness="1 0 0 0" Margin="-1,15,0,15" BorderBrush="LightGray" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1"/>
+
+                                <Ellipse VerticalAlignment="Center"  Grid.Row="2" Grid.ColumnSpan="2" Grid.RowSpan="2" Fill="#FF00BF" Width="10" Height="10"/>
+                            </Grid>
+
+                        </Grid>
+                        
+                    </Border>
+
+                </Grid>
+
+               
+            </Grid>
+
+            <Border Grid.Row="9" Grid.ColumnSpan="3" Background="#FF00BF" CornerRadius="5 5 5 5" Margin="5,0,5,5" Tapped="{x:Bind ViewModel.RequestLyftTapped}">
+                <TextBlock VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" FontSize="22" Text="Request Lyft"/>
+
+            </Border>
+        </Grid>
+
+        <!--The ride type modal dialog-->
+        <controls:ModalDialog x:Name="BusyModal" IsModal="{x:Bind ViewModel.ShowDetails, Mode=TwoWay}" 
+                              CanBackButtonDismiss="True" DisableBackButtonWhenModal="False">
+            <controls:ModalDialog.ModalContent>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.1*"/>
+                        <RowDefinition Height="0.6*"/>
+                        <RowDefinition Height="0.3*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.05*"/>
+                        <ColumnDefinition Width="0.90*"/>
+                        <ColumnDefinition Width="0.05*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Row="1" Grid.Column="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height=".6*"/>
+                                <RowDefinition Height=".4*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Background="#FF00BF">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height=".3*"/>
+                                    <RowDefinition Height=".3*"/>
+                                    <RowDefinition Height=".4*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0.05*"/>
+                                    <ColumnDefinition Width="0.90*"/>
+                                    <ColumnDefinition Width="0.05*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Margin="0,5,0,0" 
+                                           Grid.Row="0" Grid.Column="1" FontSize="26" Text="{x:Bind ViewModel.ModalViewModel.Title, Mode=OneWay}"/>
+                                <Image HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Width="100"
+                                       Grid.Column="1" Source="{x:Bind ViewModel.ModalViewModel.Image, Mode=OneWay}"/>
+                                <TextBlock FontSize="14" HorizontalAlignment="Center" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" 
+                                           Grid.Row="2" TextWrapping="WrapWholeWords" Grid.Column="1"
+                                           Text="{x:Bind ViewModel.ModalViewModel.Description, Mode=OneWay}"/>
+                            </Grid>
+
+
+                            <Grid Grid.Row="1" Margin="0,5,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height=".2*"/>
+                                    <RowDefinition Height=".2*"/>
+                                    <RowDefinition Height=".2*"/>
+                                    <RowDefinition Height=".2*"/>
+                                    <RowDefinition Height=".2*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width=".05*"/>
+                                    <ColumnDefinition Width=".45*"/>
+                                    <ColumnDefinition Width=".45*"/>
+                                    <ColumnDefinition Width=".05*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!--Minimum-->
+                                <TextBlock FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Minimum" Grid.Row="0" Grid.Column="1"/>
+                                <TextBlock FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{x:Bind ViewModel.ModalViewModel.Minimum, Mode=OneWay}" Grid.Row="0" Grid.Column="2"/>
+                                                     
+                                <TextBlock FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Base fare" Grid.Row="1" Grid.Column="1"/>
+                                <TextBlock FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{x:Bind ViewModel.ModalViewModel.BaseFare, Mode=OneWay}" Grid.Row="1" Grid.Column="2"/>
+                                                     
+                                <!--Per mile-->      
+                                <TextBlock FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Per mile" Grid.Row="2" Grid.Column="1"/>
+                                <TextBlock FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{x:Bind ViewModel.ModalViewModel.PerMile, Mode=OneWay}" Grid.Row="2" Grid.Column="2"/>
+                                                     
+                                <!--Per minute-->    
+                                <TextBlock FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Per minute" Grid.Row="3" Grid.Column="1"/>
+                                <TextBlock FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{x:Bind ViewModel.ModalViewModel.PerMinute, Mode=OneWay}" Grid.Row="3" Grid.Column="2"/>
+
+                                <TextBlock FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                           Foreground="Gray" Text="$1.85 Service fee added to all rides" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"/>
+
+                            </Grid>
+                            
+                        </Grid>
+                    </Grid>
+                    
+                    <!--The closing text-->
+                    <TextBlock Grid.Row="2" Grid.Column="1" Foreground="White" FontFamily="Segoe MDL2 assets" Text="&#59540;" 
+                               HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Tapped="{x:Bind ViewModel.CloseDetailsTapped}"/>
+                </Grid>
+            </controls:ModalDialog.ModalContent>
+        </controls:ModalDialog>
+
+        <!--The search modal dialog-->
+        <controls:ModalDialog IsModal="{x:Bind ViewModel.ShowSearch, Mode=TwoWay}"
+                              CanBackButtonDismiss="True" DisableBackButtonWhenModal="False">
+            <controls:ModalDialog.ModalContent>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".05*"/>
+                        <ColumnDefinition Width=".9*"/>
+                        <ColumnDefinition Width=".05*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height=".1*"/>
+                        <RowDefinition Height=".6*"/>
+                        <RowDefinition Height=".3*"/>
+                    </Grid.RowDefinitions>
+                    <AutoSuggestBox Grid.Column="1" Grid.Row="1" x:Name="SearchBox" PlaceholderText="Search Destination" QueryIcon="Find"
+                                    Style="{StaticResource SearchBoxStyle}"
+                                    TextChanged="{x:Bind ViewModel.SearchTextChanged}"
+                                    QuerySubmitted="{x:Bind ViewModel.SearchQuerySubmitted}"
+                                    SuggestionChosen="{x:Bind ViewModel.SearchSuggestionChosen}"
+                                    Loaded="{x:Bind ViewModel.SearchBoxLoaded}"
+                                    ItemsSource="{x:Bind ViewModel.Suggestions, Mode=OneWay}"
+                                    ItemTemplate="{StaticResource SearchResult}">
+                        <!--<AutoSuggestBox.ItemTemplate>
+                            --><!--<DataTemplate>
+                                <TextBlock Text="{Binding}" FontSize="22"/>
+                            </DataTemplate>--><!--
+                        </AutoSuggestBox.ItemTemplate>-->
+
+                    </AutoSuggestBox>
+
+                    <TextBlock Grid.Row="2" Grid.Column="1" Foreground="White" FontFamily="Segoe MDL2 assets" Text="&#59540;" 
+                               HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Tapped="{x:Bind ViewModel.CloseSearchBoxTapped}"/>
+
+                </Grid>
+            </controls:ModalDialog.ModalContent>
+        </controls:ModalDialog>
+
+    </Grid>
+    
+</Page>
